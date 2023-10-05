@@ -16,6 +16,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 import study.querydsl.dto.MemberDto;
 import study.querydsl.dto.QMemberDto;
@@ -635,5 +636,41 @@ public class QuerydslBasicTest {
 
     private Predicate allEq(String usernameCond, Integer ageCond) {
         return usernameEq(usernameCond).and(ageEq(ageCond));
+    }
+
+    @Test
+    public void bulkUpdate() {
+        long count = queryFactory
+                .update(member)
+                .set(member.username, "비회원")
+                .where(member.age.lt(28))
+                .execute();
+
+        em.flush();
+        em.clear();
+
+        List<Member> result = queryFactory
+                .selectFrom(member)
+                .fetch();
+
+        for (Member member : result) {
+            System.out.println("member = " + member);
+        }
+    }
+
+    @Test
+    public void bulkAdd() {
+        long count = queryFactory
+                .update(member)
+                .set(member.age, member.age.multiply(2))
+                .execute();
+    }
+
+    @Test
+    public void bulkDelete() {
+        long count = queryFactory
+                .delete(member)
+                .where(member.age.gt(18))
+                .execute();
     }
 }
