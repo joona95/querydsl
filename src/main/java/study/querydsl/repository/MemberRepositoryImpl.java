@@ -145,7 +145,7 @@ public class MemberRepositoryImpl extends QuerydslRepositorySupport implements M
 
         JPAQuery<Member> countQuery = queryFactory
                 .selectFrom(member)
-//                .leftJoin(member.team, team)
+                .leftJoin(member.team, team)
                 .where(
                         usernameEq(condition.getUsername()),
                         teamNameEq(condition.getTeamName()),
